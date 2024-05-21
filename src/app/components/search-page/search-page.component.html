@@ -1,0 +1,89 @@
+
+  <div class="container">
+    <form [formGroup]="searchForm" (ngSubmit)="sendUser()">
+      <label for="username">Username</label>
+      <input
+        class="border-solid"
+        type="text"
+        id="username"
+        formControlName="username"
+        style="border: 2px solid black;"
+      />
+  <span>
+      <button
+      class="btn bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 ml-4"
+        [disabled]="!searchForm.valid"
+      >
+        Search
+      </button>
+    </span>
+    </form>
+  </div>
+
+  <div *ngIf="loader" class="mt-4">
+    <ngx-skeleton-loader count="{{totalcount}}" appearance="line"></ngx-skeleton-loader>
+  </div>
+  
+  <div *ngIf="!loader && userdetail" class="flex items-center p-4 border border-black-200 rounded-lg mt-4">
+    <img
+      class="w-20 h-20 rounded-full mr-4 object-cover"
+      [src]="userdetail.avatar_url"
+      alt="{{ userdetail.name }}"
+    />
+    <div class="flex-grow">
+      <h2 class="text-xl font-bold">{{userdetail.name}}</h2>
+      <p class="text-gray-600 mt-2">Bio: {{ userdetail.bio }}</p>
+      <p class="text-gray-600 mt-2">{{ userdetail.location }}</p>
+      <p class="text-gray-600 mt-1">
+        <a
+          *ngIf="userdetail.twitter_username"
+          href="https://twitter.com/{{ userdetail.twitter_username }}"
+          class="text-blue-500 hover:underline"
+          >Twitter: https://twitter.com/{{ userdetail.twitter_username }}</a
+        >
+      </p>
+    </div>
+    <!-- <ngx-skeleton-loader count="{{totalcount}}" *ngIf="loader" appearance="line"/> -->
+<!--  -->
+
+  </div>
+  <p class="text-gray-600 mt-1">
+    <a href="https://github.com/{{userdetail.url}}" class="text-blue-500 hover:underline">{{userdetail.html_url}}</a>
+  </p>
+
+ 
+
+  <div  *ngIf="!loader&&repositories.length > 0" class="mt-6 ">
+    <h2 class="text-xl font-bold">Repositories</h2>
+    <ul class="grid grid-cols-2 gap-3">
+        
+      <li
+        *ngFor="let repo of repositories | paginate: { itemsPerPage: 10, currentPage: pagination } "
+        class="border border-black rounded p-6  max-w-md"
+      >
+        <div class="repository-info" >
+            
+          <a
+            [href]="repo.html_url"
+            target="_blank"
+            class="text-blue-500 hover:underline"
+            >{{ repo.name }}</a>
+            <p class="text-gray-600 mt-2">{{ repo.description }}</p>
+
+
+            <div class="text-gray-600 mt-2">
+                <span *ngFor="let topic of repo.topics" class="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-black-700 mr-2">
+                  #{{ topic }}
+                </span>
+              </div>
+         
+        </div>
+      </li>
+    </ul>
+   
+    <pagination-controls (pageChange)="pagination = $event" class="mt-4"></pagination-controls> <!-- Pagination controls -->
+
+
+
+  </div>
+  
